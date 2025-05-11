@@ -9,6 +9,15 @@ builder.Services.AddDbContext<DatabaseContext>(options =>
 
 var app = builder.Build();
 
+// Seed the database
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
+    db.Database.Migrate();
+    db.Seed();
+}
+
+// Test endpoint
 app.MapGet("/", () => "Hello, World!");
 
 app.Run();
