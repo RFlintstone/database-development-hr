@@ -16,4 +16,4 @@ FROM mcr.microsoft.com/dotnet/aspnet:9.0
 EXPOSE 8080
 WORKDIR /app
 COPY --from=build /app .
-ENTRYPOINT ["./EFCore"]
+ENTRYPOINT ["dotnet", "EFCore.dll"]

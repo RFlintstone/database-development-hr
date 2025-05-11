@@ -1,17 +1,4 @@
 ﻿services:
-  app:
-    build: .
-    ports:
-      - "80:8080"  # Optional: expose your app's port if needed
-    environment:
-      - ASPNETCORE_URLS=http://+:8080
-      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=ruben;Username=postgres;Password=password
-    depends_on:
-      - postgres
-    networks:
-      - mynetwork
-    logging:
-      driver: none
   postgres:
     image: postgres
     command: -c shared_buffers=256MB -c max_connections=200
@@ -28,22 +15,43 @@
       - mynetwork
     logging:
       driver: none
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+  
   pgadmin:
     image: dpage/pgadmin4
     environment:
-      PGADMIN_DEFAULT_EMAIL: admin@ad.min
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
       PGADMIN_DEFAULT_PASSWORD: admin
       PGADMIN_LISTEN_PORT: 80
     ports:
       - '8081:80'
     volumes:
       - pgAdminData:/var/lib/pgadmin
+      - ./pgadmin-servers.json:/pgadmin4/servers.json
     depends_on:
-      - "postgres"
+      postgres:
+        condition: service_healthy
     networks:
       - mynetwork
     logging:
       driver: none
+  
+  app:
+    build: .
+    ports:
+      - "80:8080"
+    environment:
+      - ASPNETCORE_URLS=http://+:8080
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=ruben;Username=postgres;Password=password
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - mynetwork
 
 volumes:
   pgdata:
