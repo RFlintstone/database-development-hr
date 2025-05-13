@@ -68,10 +68,7 @@ public class PostController : ControllerBase
         // Find all posts
         var result = await _context.Posts.ToListAsync();
         
-        // If posts dont not exist, return NotFound
-        if (result is null) return NotFound();
-        
-        // Return all posts
+        // Return all posts (empty list if no posts exist)
         return Ok(result);
     }
 
