@@ -7,7 +7,16 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<DatabaseContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+// Register Services
+builder.Services.AddAuthorization();
+builder.Services.AddControllers();
+
 var app = builder.Build();
+
+// Middleware
+app.UseRouting();
+app.UseAuthorization();
+app.MapControllers();
 
 // Seed the database
 using (var scope = app.Services.CreateScope())
