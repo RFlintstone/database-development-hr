@@ -1,0 +1,33 @@
+﻿@HostAddress = http://localhost:80
+@ApiPath = api/v1
+
+# Posts
+### POST new post
+POST {{HostAddress}}/{{ApiPath}}/post
+Accept: application/json
+Content-Type: application/json
+
+{
+  "title": "Third Post",
+  "content": "Lorem Ipsum"
+}
+
+### GET specific post
+GET {{HostAddress}}/{{ApiPath}}/post/3
+
+### GET all posts
+GET {{HostAddress}}/{{ApiPath}}/post
+
+### PUT post
+PUT {{HostAddress}}/{{ApiPath}}/post/3
+Accept: application/json
+Content-Type: application/json
+
+{
+  "id": 3,
+  "title": "Third Post!",
+  "content": "Lorem Ipsum!"
+}
+
+### DELETE post
+DELETE {{HostAddress}}/{{ApiPath}}/post/3
